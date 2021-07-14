@@ -321,6 +321,11 @@ public type ListMeetingTemplatesResponse record {
 @display {label: "Zoom Client"}
 public client class Client {
     http:Client clientEp;
+    # Client initialization.
+    #
+    # + clientConfig - Client configuration details
+    # + serviceUrl - Connector server URL
+    # + return - The error at failure of client initialization
     public isolated function init(ClientConfig clientConfig, string serviceUrl = "https://api.zoom.us/v2") returns error? {
         http:ClientSecureSocket? secureSocketConfig = clientConfig?.secureSocketConfig;
         http:Client httpEp = check new (serviceUrl, { auth: clientConfig.authConfig, secureSocket: secureSocketConfig });

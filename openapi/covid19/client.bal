@@ -24,6 +24,11 @@ import  ballerina/lang.'string;
 @display {label: "Covid19 Client"}
 public client class Client {
     http:Client clientEp;
+    # Client initialization.
+    #
+    # + clientConfig - Client configuration details
+    # + serviceUrl - Connector server URL
+    # + return - The error at failure of client initialization
     public isolated function init(http:ClientConfiguration clientConfig =  {}, string serviceUrl = "https://disease.sh") returns error? {
         http:Client httpEp = check new (serviceUrl, clientConfig);
         self.clientEp = httpEp;
