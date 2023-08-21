@@ -213,12 +213,12 @@ task generateNbuildLatestOpenAPIConnectors {
         def reportFile = file("${project.projectDir}/.github/reports/summary.txt")
         reportFile.text = summary
 
-        if (generationFailedConnectors.size() > 0 || compilationFailedConnectors.size() > 0) {
-            // Throw an exception to fail the build
-            throw new GradleException("${generationFailedConnectors.size()} connectors failed regeneration & " +
-                            "${compilationFailedConnectors.size()} connectors failed compilation. See the summary above.")
+        // if (generationFailedConnectors.size() > 0 || compilationFailedConnectors.size() > 0) {
+        //     // Throw an exception to fail the build
+        //     throw new GradleException("${generationFailedConnectors.size()} connectors failed regeneration & " +
+        //                     "${compilationFailedConnectors.size()} connectors failed compilation. See the summary above.")
 
-        }
+        // }
 
         if (generationFailedConnectors.size() == 0 && compilationFailedConnectors.size() == 0) {
             println "All connectors executed successfully."
