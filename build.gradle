@@ -167,33 +167,30 @@ task generateNbuildLatestOpenAPIConnectors {
         def generationFailedConnectors = []  // List to store generation failed connectors
         def compilationFailedConnectors = []  // List to store compilation failed connectors
 
-        // Create a summary report
-        def summary = "The report"
+        for (String path : ballerinaPackages) {
+            println "----- Connector : " + path
+            try {
+                exec {
+                    commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal openapi -i openapi.* --mode client --client-methods ${clientMethod}"
+                    workingDir(path)
+                }
+                println "Connector generation is successful for " + path
+            } catch (Exception genEx) {
+                println "Failed to re-generate the connector [" + path + "]. Error : " + genEx.toString()
+                generationFailedConnectors << path  // Add the failed connector to the list
+                continue
+            }
 
-        // for (String path : ballerinaPackages) {
-        //     println "----- Connector : " + path
-        //     try {
-        //         exec {
-        //             commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal openapi -i openapi.* --mode client --client-methods ${clientMethod}"
-        //             workingDir(path)
-        //         }
-        //         println "Connector generation is successful for " + path
-        //     } catch (Exception genEx) {
-        //         println "Failed to re-generate the connector [" + path + "]. Error : " + genEx.toString()
-        //         generationFailedConnectors << path  // Add the failed connector to the list
-        //         continue
-        //     }
-
-        //     try {
-        //         exec {
-        //             commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal pack ${path}"
-        //         }
-        //         println "bal pack success for " + path
-        //     } catch (Exception buildEx) {
-        //         println "Failed to build the re-generate the connector [" + path + "]. Error : " + buildEx.toString()
-        //         compilationFailedConnectors << path  // Add the failed connector to the list
-        //     }
-        // }
+            try {
+                exec {
+                    commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal pack ${path}"
+                }
+                println "bal pack success for " + path
+            } catch (Exception buildEx) {
+                println "Failed to build the re-generate the connector [" + path + "]. Error : " + buildEx.toString()
+                compilationFailedConnectors << path  // Add the failed connector to the list
+            }
+        }
 
         // Print summary of re-generation failed connectors
         if (generationFailedConnectors.size() > 0) {
@@ -211,8 +208,9 @@ task generateNbuildLatestOpenAPIConnectors {
             }
         } 
 
+        def summary = constructSummaryReport(ballerinaDistributionPath, ballerinaPackages.size(), generationFailedConnectors, compilationFailedConnectors)
         // Write the summary to a file
-        def reportFile = file("${project.projectDir}/reports/summary.txt")
+        def reportFile = file("${project.projectDir}/.github/reports/summary.txt")
         reportFile.text = summary
 
         if (generationFailedConnectors.size() > 0 || compilationFailedConnectors.size() > 0) {
@@ -226,4 +224,31 @@ task generateNbuildLatestOpenAPIConnectors {
             println "All connectors executed successfully."
         }
     }
+}
+
+def constructSummaryReport(ballerinaDistributionPath, totalConnectors, generationFailedConnectors, compilationFailedConnectors) {
+    def summary = "# Summary Report\n"
+    summary += "Date and Time: ${new Date()}\n"
+    summary += "Ballerina Version: ${ballerinaDistributionPath}\n"
+    summary += "Total Connectors Run: ${totalConnectors}\n"
+
+    if (generationFailedConnectors.size() > 0 || compilationFailedConnectors.size() > 0) {
+        summary += "Failed Connectors:\n"
+        if (generationFailedConnectors.size() > 0) {
+            summary += "Generation Failed:\n"
+            generationFailedConnectors.each { connector ->
+                summary += "- ${connector}\n"
+            }
+        }
+        if (compilationFailedConnectors.size() > 0) {
+            summary += "Compilation Failed:\n"
+            compilationFailedConnectors.each { connector ->
+                summary += "- ${connector}\n"
+            }
+        }
+    } else {
+        summary += "All connectors executed successfully.\n"
+    }
+
+    return summary
 }
