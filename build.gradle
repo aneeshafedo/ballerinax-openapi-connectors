@@ -18,7 +18,6 @@ apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
 
 def ballerinaDistributionPath = System.getenv("BALLERINA_HOME")
-def customDistributionPath = null
 List<String> ballerinaPackages = new ArrayList<>();
 List<String> updatedBallerinaPackages = new ArrayList<>();
 boolean release = false;
@@ -164,24 +163,16 @@ task testOpenAPITool {
 
 task generateNbuildLatestOpenAPIConnectors {
     if (testConnectorGeneration) {
-        println "Task: Re-generate and build connectors..."     
-        println "customDistributionPath: ${customDistributionPath}"   
-
+        println "Task: Re-generate and build connectors..."
         def generationFailedConnectors = []  // List to store generation failed connectors
         def compilationFailedConnectors = []  // List to store compilation failed connectors
-
-        if (customDistributionPath == null) {
-            println "Custom distribution path is not provided. Using the default distribution path."
-        } else {
-            ballerinaDistributionPath = customDistributionPath;
-        }
 
         for (String path : ballerinaPackages) {
             println "----- Connector : " + path
             try {
                 exec {
+                    commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal openapi -i openapi.* --mode client --client-methods ${clientMethod}"
                     workingDir(path)
-                    commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal openapi -i openapi.* --mode client --client-methods ${clientMethod}"     
                 }
                 println "Connector generation is successful for " + path
             } catch (Exception genEx) {

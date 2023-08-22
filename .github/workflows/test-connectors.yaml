@@ -16,11 +16,6 @@ on:
         required: true
         default: 'remote'
         options: ['remote', 'resource']
-      custom_distribution_path:
-        description: Path to Ballerina Custom Distribution
-        required: false
-        default: ''
-
 
 jobs:
   # regenerate_connectors_with_nightly:
@@ -49,24 +44,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      # - name: Set up JDK 17
-      #   uses: actions/setup-java@v2
-      #   with:
-      #     distribution: 'adopt'
-      #     java-version: 17
-      # - name: Download and Unzip
-      #   if: github.event.inputs.custom_distribution_path != ''
-      #   run: |
-      #     wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "${{ github.event.inputs.custom_distribution_path }}/zip"
-      #     unzip -o ballerina.zip
-      #     balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
-      #     echo "Unzipping ${balDistZip}"
-      #     unzip -o "${balDistZip}"
-      #     EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-      #     export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-      #     echo $EXTRACTED_DISTRIBUTION_PATH
-      #     # echo "::set-env name=EXTRACTED_DISTRIBUTION_PATH::$EXTRACTED_DISTRIBUTION_PATH"
-
+      
       - name: Build with Gradle
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
