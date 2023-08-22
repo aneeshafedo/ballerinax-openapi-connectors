@@ -52,7 +52,7 @@ jobs:
       - name: Download, Unzip, and Delete
         run: |
           # Download the zip file
-          wget --header="Authorization: Bearer ${{ secrets.PACKAGE_PAT }}" "${{ github.event.inputs.custom_distribution_path }}/zip"
+          wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${{ github.event.inputs.custom_distribution_path }}/zip"
 
 
           # Unzip the contents of the zip file
