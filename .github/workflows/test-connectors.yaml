@@ -52,25 +52,22 @@ jobs:
       - name: Download, Unzip, and Delete
         run: |
           # Download the zip file
-          wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${{ github.event.inputs.custom_distribution_path }}/zip"
-
+          wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "${{ github.event.inputs.custom_distribution_path }}/zip"
 
           # Unzip the contents of the zip file
-          unzip "ballerina.zip"
-
-          # Delete the downloaded zip file
-          rm "ballerina.zip"
+          unzip -o ballerina.zip
 
           # Get a list of all zip files in the directory
           balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
 
           echo "Unzipping ${balDistZip}"
-          unzip "${balDistZip}"
+          unzip -o "${balDistZip}"
 
           extractedDistributionPath="${balDistZip%.zip}"
           echo "bal folder ${extractedDistributionPath}"
 
           echo "$extractedDistributionPath" > extracted_path.txt
+
 
       - name: Build with Gradle
         env:
