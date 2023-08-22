@@ -18,7 +18,7 @@ apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
 
 def ballerinaDistributionPath = System.getenv("BALLERINA_HOME")
-String customDistributionPath = System.getenv("EXTRACTED_DISTRIBUTION_PATH")
+def customDistributionPath = System.getenv("EXTRACTED_DISTRIBUTION_PATH")
 List<String> ballerinaPackages = new ArrayList<>();
 List<String> updatedBallerinaPackages = new ArrayList<>();
 boolean release = false;
