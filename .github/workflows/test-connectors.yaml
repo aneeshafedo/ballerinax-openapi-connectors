@@ -49,31 +49,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Download, Unzip, and Delete
+      - name: Download and Unzip
+        if: github.event.inputs.custom_distribution_path != ''
         run: |
-          # Download the zip file
           wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "${{ github.event.inputs.custom_distribution_path }}/zip"
-
-          # Unzip the contents of the zip file
           unzip -o ballerina.zip
-
-          # Get a list of all zip files in the directory
           balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
-
           echo "Unzipping ${balDistZip}"
           unzip -o "${balDistZip}"
-
-          extractedDistributionPath="${balDistZip%.zip}"
-          echo "bal folder ${extractedDistributionPath}"
-
-          echo "$extractedDistributionPath" > extracted_path.txt
-
+          EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
+          echo "::set-env name=EXTRACTED_DISTRIBUTION_PATH::$EXTRACTED_DISTRIBUTION_PATH"
 
       - name: Build with Gradle
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
           GRADLE_USER_HOME: ~/.gradle
-          packagePAT: ${{ secrets.GITHUB_TOKEN }}
+          EXTRACTED_DISTRIBUTION_PATH: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
         run: |
           ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
       - name: Upload Summary Report
