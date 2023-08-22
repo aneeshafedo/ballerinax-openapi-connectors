@@ -52,7 +52,8 @@ jobs:
       - name: Download, Unzip, and Delete
         run: |
           # Download the zip file
-          curl -L -H "Authorization: Bearer ${{ secrets.PACKAGE_PAT }}" "${{ github.event.inputs.client_method }}/zip"
+          wget --header="Authorization: Bearer ${{ secrets.PACKAGE_PAT }}" "${{ github.event.inputs.client_method }}/zip"
+
 
           # Unzip the contents of the zip file
           unzip "ballerina.zip"
