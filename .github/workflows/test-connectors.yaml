@@ -58,7 +58,9 @@ jobs:
           echo "Unzipping ${balDistZip}"
           unzip -o "${balDistZip}"
           EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-          echo "::set-env name=EXTRACTED_DISTRIBUTION_PATH::$EXTRACTED_DISTRIBUTION_PATH"
+          export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
+          echo EXTRACTED_DISTRIBUTION_PATH
+          # echo "::set-env name=EXTRACTED_DISTRIBUTION_PATH::$EXTRACTED_DISTRIBUTION_PATH"
 
       - name: Build with Gradle
         env:
