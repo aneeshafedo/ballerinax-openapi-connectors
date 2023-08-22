@@ -16,6 +16,11 @@ on:
         required: true
         default: 'remote'
         options: ['remote', 'resource']
+      custom_distribution_path:
+        description: Path to Ballerina Custom Distribution
+        required: true
+        default: ''
+
 
 jobs:
   # regenerate_connectors_with_nightly:
@@ -44,11 +49,33 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+      - name: Download, Unzip, and Delete
+        run: |
+          # Download the zip file
+          curl -L -H "Authorization: Bearer ${{ secrets.PACKAGE_PAT }}" "${{ github.event.inputs.client_method }}/zip"
+
+          # Unzip the contents of the zip file
+          unzip "ballerina.zip"
+
+          # Delete the downloaded zip file
+          rm "ballerina.zip"
+
+          # Get a list of all zip files in the directory
+          balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
+
+          echo "Unzipping ${balDistZip}"
+          unzip "${balDistZip}"
+
+          extractedDistributionPath="${balDistZip%.zip}"
+          echo "bal folder ${extractedDistributionPath}"
+
+          echo "$extractedDistributionPath" > extracted_path.txt
+
       - name: Build with Gradle
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
           GRADLE_USER_HOME: ~/.gradle
+          packagePAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
       - name: Upload Summary Report
