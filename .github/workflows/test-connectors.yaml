@@ -18,7 +18,7 @@ on:
         options: ['remote', 'resource']
       custom_distribution_path:
         description: Path to Ballerina Custom Distribution
-        required: true
+        required: false
         default: ''
 
 
