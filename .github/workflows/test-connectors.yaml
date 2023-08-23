@@ -57,7 +57,6 @@ jobs:
           balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
           echo "Unzipping ${balDistZip}"
           unzip -o "${balDistZip}"
-          EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
           export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
           echo $EXTRACTED_DISTRIBUTION_PATH
       - name: Build with Gradle
@@ -66,6 +65,7 @@ jobs:
           GRADLE_USER_HOME: ~/.gradle
           EXTRACTED_DISTRIBUTION_PATH: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
         run: |
+          echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
           ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
       - name: Upload Summary Report
         uses: actions/upload-artifact@v2
