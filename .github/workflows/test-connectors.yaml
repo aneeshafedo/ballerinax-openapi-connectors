@@ -65,10 +65,8 @@ jobs:
           GRADLE_USER_HOME: ~/.gradle
           EXTRACTED_DISTRIBUTION_PATH: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
         run: |
-          # echo $EXTRACTED_DISTRIBUTION_PATH
-          # echo "Using distribution path: ${{ EXTRACTED_DISTRIBUTION_PATH}} "
-          echo ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
-          # echo ${{ EXTRACTED_DISTRIBUTION_PATH }}
+          echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
+          echo "Using env distribution path: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}"
           ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
       - name: Upload Summary Report
         uses: actions/upload-artifact@v2
