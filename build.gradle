@@ -209,7 +209,6 @@ task generateNbuildLatestOpenAPIConnectors {
                     commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal pack ${path}"
                 }
                 println "bal pack success for " + connector
-                break;
             } catch (Exception buildEx) {
                 println "Failed to build the re-generate the connector [" + connector + "]. Error : " + buildEx.toString()
                 compilationFailedConnectors << connector  // Add the failed connector to the list
