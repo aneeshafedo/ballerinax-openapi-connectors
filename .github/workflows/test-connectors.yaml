@@ -65,7 +65,7 @@ jobs:
           GRADLE_USER_HOME: ~/.gradle
           EXTRACTED_DISTRIBUTION_PATH: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
         run: |
-          echo $EXTRACTED_DISTRIBUTION_PATH
+          # echo $EXTRACTED_DISTRIBUTION_PATH
           echo "Using distribution path: ${{ EXTRACTED_DISTRIBUTION_PATH}} "
           echo ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
           echo ${{ EXTRACTED_DISTRIBUTION_PATH }}
