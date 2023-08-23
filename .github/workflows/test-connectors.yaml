@@ -49,16 +49,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      # - name: Download and Unzip
-      #   if: github.event.inputs.artifact_id != ''
-      #   run: |
-      #     wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "https://api.github.com/repos/ballerina-platform/ballerina-distribution/actions/artifacts/${{ github.event.inputs.artifact_id }}/zip"
-      #     unzip -o ballerina.zip
-      #     balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
-      #     echo "Unzipping ${balDistZip}"
-      #     unzip -o "${balDistZip}"
-      #     export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-      #     echo $EXTRACTED_DISTRIBUTION_PATH
       - name: Build with Gradle
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
@@ -71,7 +61,6 @@ jobs:
             echo "Unzipping ${balDistZip}"
             unzip -o "${balDistZip}"
             EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-            # Get the absolute path of the extracted folder
             ABSOLUTE_EXTRACTED_DISTRIBUTION_PATH=$(realpath "$EXTRACTED_DISTRIBUTION_PATH")
             echo "Start generation flow..."
             ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=$ABSOLUTE_EXTRACTED_DISTRIBUTION_PATH
