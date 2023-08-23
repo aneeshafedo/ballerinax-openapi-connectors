@@ -70,11 +70,12 @@ jobs:
             balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
             echo "Unzipping ${balDistZip}"
             unzip -o "${balDistZip}"
+            echo $(find . -name 'ballerina-*' | head -n 1)
             export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
             echo $EXTRACTED_DISTRIBUTION_PATH
             echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
             echo "Start generation flow..."
-            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=ballerina-2201.8.0-SNAPSHOT-swan-lake
+            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=$EXTRACTED_DISTRIBUTION_PATH
           else
             ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
           fi
