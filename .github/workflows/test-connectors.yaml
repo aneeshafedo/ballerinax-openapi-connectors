@@ -74,6 +74,10 @@ jobs:
             export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
             echo $EXTRACTED_DISTRIBUTION_PATH
             echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
+            # List subfolder names
+            subfolderNames=$(find "$EXTRACTED_DISTRIBUTION_PATH" -type d -mindepth 1 -maxdepth 1 -exec basename {} \;)
+
+            echo "Subfolder names: $subfolderNames"
             echo "Start generation flow..."
             ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=$EXTRACTED_DISTRIBUTION_PATH
           else
