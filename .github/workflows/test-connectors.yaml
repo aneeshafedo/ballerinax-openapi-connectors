@@ -50,7 +50,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Download and Unzip
-        if: github.event.inputs.custom_distribution_path != ''
+        if: github.event.inputs.artifact_id != ''
         run: |
           wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "https://api.github.com/repos/ballerina-platform/ballerina-distribution/actions/artifacts/${{ github.event.inputs.artifact_id }}/zip"
           unzip -o ballerina.zip

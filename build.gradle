@@ -170,7 +170,7 @@ task generateNbuildLatestOpenAPIConnectors {
         def generationFailedConnectors = []  // List to store generation failed connectors
         def compilationFailedConnectors = []  // List to store compilation failed connectors
 
-        if (customDistributionPath == null) {
+        if (customDistributionPath == null || customDistributionPath == "") {
             println "Custom distribution path is not provided. Using the default distribution path."
         } else {
             ballerinaDistributionPath = customDistributionPath;
