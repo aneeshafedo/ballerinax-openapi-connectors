@@ -79,7 +79,7 @@ jobs:
 
             echo "Subfolder names: $subfolderNames"
             # Get the absolute path of the extracted folder
-            absolutePath=$(realpath "$extractedFolder")
+            absolutePath=$(realpath "$EXTRACTED_DISTRIBUTION_PATH")
 
             echo "Absolute path of extracted folder: $absolutePath"
             echo "Start generation flow..."
