@@ -57,16 +57,24 @@ jobs:
           balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
           echo "Unzipping ${balDistZip}"
           unzip -o "${balDistZip}"
-          export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-          echo $EXTRACTED_DISTRIBUTION_PATH
+          EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
+          echo "EXTRACTED_DISTRIBUTION_PATH=${EXTRACTED_DISTRIBUTION_PATH}" > $GITHUB_WORKSPACE/extracted_distribution_path.txt
+      - name: Publish Workspace Artifact
+        if: github.event.inputs.custom_distribution_path != ''
+        run: |
+          echo "Publishing workspace artifact..."
+          echo "::set-output name=EXTRACTED_DISTRIBUTION_PATH::$GITHUB_WORKSPACE/extracted_distribution_path.txt"
+        id: publish_artifact
       - name: Build with Gradle
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
           GRADLE_USER_HOME: ~/.gradle
           EXTRACTED_DISTRIBUTION_PATH: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
         run: |
+          echo "Downloading workspace artifact..."
+          curl -s -O ${{ steps.publish_artifact.outputs.EXTRACTED_DISTRIBUTION_PATH }}
+          EXTRACTED_DISTRIBUTION_PATH=$(cat extracted_distribution_path.txt)
           echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
-          echo "Using env distribution path: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}"
           ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
       - name: Upload Summary Report
         uses: actions/upload-artifact@v2
