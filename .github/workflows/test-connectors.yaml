@@ -74,7 +74,7 @@ jobs:
             echo $EXTRACTED_DISTRIBUTION_PATH
             echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
             echo "Start generation flow..."
-            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=ballerina-2201.8.0-SNAPSHOT-swan-lake/bin/bal
+            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=ballerina-2201.8.0-SNAPSHOT-swan-lake
           else
             ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
           fi
