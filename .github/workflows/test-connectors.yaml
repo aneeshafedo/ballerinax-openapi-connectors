@@ -72,9 +72,13 @@ jobs:
             unzip -o "${balDistZip}"
             export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
             echo $EXTRACTED_DISTRIBUTION_PATH
+            echo "Using distribution path: ${{ EXTRACTED_DISTRIBUTION_PATH }}"
+            echo "Start generation flow..."
+            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=${{ EXTRACTED_DISTRIBUTION_PATH }}
+          else
+            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
           fi
-          echo "Using distribution path: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}"
-          ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=${{ env.EXTRACTED_DISTRIBUTION_PATH }}
+          
       - name: Upload Summary Report
         uses: actions/upload-artifact@v2
         with:
