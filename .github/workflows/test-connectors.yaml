@@ -60,7 +60,7 @@ jobs:
           EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
           echo "EXTRACTED_DISTRIBUTION_PATH=${EXTRACTED_DISTRIBUTION_PATH}" > $GITHUB_WORKSPACE/extracted_distribution_path.txt
       - name: Publish Workspace Artifact
-        if: github.event.inputs.custom_distribution_path != ''
+        if: github.event.inputs.artifact_id != ''
         run: |
           echo "Publishing workspace artifact..."
           echo "::set-output name=EXTRACTED_DISTRIBUTION_PATH::$GITHUB_WORKSPACE/extracted_distribution_path.txt"
