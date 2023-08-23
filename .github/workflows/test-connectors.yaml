@@ -70,21 +70,13 @@ jobs:
             balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
             echo "Unzipping ${balDistZip}"
             unzip -o "${balDistZip}"
-            echo "Files: $(find . -name 'ballerina-*')"
-            export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-            echo $EXTRACTED_DISTRIBUTION_PATH
-            echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
-            # List subfolder names
-            subfolderNames=$(find "$EXTRACTED_DISTRIBUTION_PATH" -type d -mindepth 1 -maxdepth 1 -exec basename {} \;)
-
-            echo "Subfolder names: $subfolderNames"
+            EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
             # Get the absolute path of the extracted folder
-            absolutePath=$(realpath "$EXTRACTED_DISTRIBUTION_PATH")
-
-            echo "Absolute path of extracted folder: $absolutePath"
+            ABSOLUTE_EXTRACTED_DISTRIBUTION_PATH=$(realpath "$EXTRACTED_DISTRIBUTION_PATH")
             echo "Start generation flow..."
-            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=$absolutePath
+            ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=$ABSOLUTE_EXTRACTED_DISTRIBUTION_PATH
           else
+            echo "Start generation flow..."
             ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
           fi
           
