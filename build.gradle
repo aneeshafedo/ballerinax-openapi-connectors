@@ -18,7 +18,6 @@ apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
 
 def ballerinaDistributionPath = System.getenv("BALLERINA_HOME")
-def customDistributionPath = System.getenv('EXTRACTED_DISTRIBUTION_PATH')
 List<String> ballerinaPackages = new ArrayList<>();
 List<String> updatedBallerinaPackages = new ArrayList<>();
 boolean release = false;
@@ -27,6 +26,7 @@ boolean buildAll = false;
 boolean testTool = false;
 boolean testConnectorGeneration = false;
 String clientMethod = "remote";
+String customDistributionPath = null;
 
 if (project.hasProperty("remote")){
     remote = new Boolean(project.property("remote").toString())
@@ -45,6 +45,9 @@ if (project.hasProperty("testConnectorGeneration")){
 }
 if (project.hasProperty("clientMethod")){
     clientMethod = new String(project.property("clientMethod").toString())
+}
+if (project.hasProperty("customDistributionPath")){
+    customDistributionPath = new String(project.property("customDistributionPath").toString())
 }
 
 String toolTestsDirPath = project.projectDir.absolutePath + "/tool-tests";

@@ -49,34 +49,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Download and Unzip
-        if: github.event.inputs.artifact_id != ''
-        run: |
-          wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "https://api.github.com/repos/ballerina-platform/ballerina-distribution/actions/artifacts/${{ github.event.inputs.artifact_id }}/zip"
-          unzip -o ballerina.zip
-          balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
-          echo "Unzipping ${balDistZip}"
-          unzip -o "${balDistZip}"
-          EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
-          echo "EXTRACTED_DISTRIBUTION_PATH=${EXTRACTED_DISTRIBUTION_PATH}" > $GITHUB_WORKSPACE/extracted_distribution_path.txt
-      - name: Publish Workspace Artifact
-        if: github.event.inputs.custom_distribution_path != ''
-        uses: actions/upload-artifact@v2
-        with:
-          name: extracted_distribution
-          path: $GITHUB_WORKSPACE/extracted_distribution_path.txt
+      # - name: Download and Unzip
+      #   if: github.event.inputs.artifact_id != ''
+      #   run: |
+      #     wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "https://api.github.com/repos/ballerina-platform/ballerina-distribution/actions/artifacts/${{ github.event.inputs.artifact_id }}/zip"
+      #     unzip -o ballerina.zip
+      #     balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
+      #     echo "Unzipping ${balDistZip}"
+      #     unzip -o "${balDistZip}"
+      #     export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
+      #     echo $EXTRACTED_DISTRIBUTION_PATH
       - name: Build with Gradle
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
           GRADLE_USER_HOME: ~/.gradle
-          EXTRACTED_DISTRIBUTION_PATH: ${{ env.EXTRACTED_DISTRIBUTION_PATH }}
         run: |
-          echo "Downloading workspace artifact..."
-          mkdir -p extracted_distribution
-          tar -xf extracted_distribution.tar -C extracted_distribution
-          EXTRACTED_DISTRIBUTION_PATH=$(cat extracted_distribution/extracted_distribution_path.txt)
+          if [[ github.event.inputs.artifact_id != '' ]]; then
+            wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "https://api.github.com/repos/ballerina-platform/ballerina-distribution/actions/artifacts/${{ github.event.inputs.artifact_id }}/zip"
+            unzip -o ballerina.zip
+            balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
+            echo "Unzipping ${balDistZip}"
+            unzip -o "${balDistZip}"
+            export EXTRACTED_DISTRIBUTION_PATH="${balDistZip%.zip}"
+            echo $EXTRACTED_DISTRIBUTION_PATH
+          fi
           echo "Using distribution path: $EXTRACTED_DISTRIBUTION_PATH"
-          ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }}
+          ./gradlew build -PtestConnectorGeneration=true -PclientMethod=${{ github.event.inputs.client_method }} -PcustomDistributionPath=${{ EXTRACTED_DISTRIBUTION_PATH }}
       - name: Upload Summary Report
         uses: actions/upload-artifact@v2
         with:
