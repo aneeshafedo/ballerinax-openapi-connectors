@@ -36,7 +36,7 @@ jobs:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
           GRADLE_USER_HOME: ~/.gradle
         run: |
-          if [[ github.event.inputs.artifact_id != '' ]]; then
+          if [[ ${{ github.event.inputs.artifact_id }} != '' ]]; then
             wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -O ballerina.zip "https://api.github.com/repos/ballerina-platform/ballerina-distribution/actions/artifacts/${{ github.event.inputs.artifact_id }}/zip"
             unzip -o ballerina.zip
             balDistZip=$(find . -name 'ballerina-*.zip' | head -n 1)
