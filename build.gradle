@@ -187,7 +187,9 @@ task generateNbuildLatestOpenAPIConnectors {
         if (connectorList != null && connectorList != "") {
             println "Connector list is provided. Using the provided connector list."
             def selectedConnectorPath = []
-            for (String connector : connectorList.split(",")) {
+            def providedConnectorList = connectorList.split(",")
+            println "Provided connector list : " + providedConnectorList
+            for (String connector : providedConnectorList) {
                 println "Connector : " + connector
                 def path = openApiPackageDirPath + "/" + connector.trim();
                 if (ballerinaPackages.contains(path)) {
