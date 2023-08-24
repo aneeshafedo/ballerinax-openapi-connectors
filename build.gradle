@@ -187,10 +187,7 @@ task generateNbuildLatestOpenAPIConnectors {
         if (connectorList != null && connectorList != "") {
             println "Connector list is provided. Using the provided connector list."
             def selectedConnectorPath = []
-            def providedConnectorList = connectorList.split(",")
-            println "Provided connector list : " + providedConnectorList
-            for (String connector : providedConnectorList) {
-                println "Connector : " + connector
+            for (String connector : connectorList.split(",")) {
                 def path = openApiPackageDirPath + "/" + connector.trim();
                 if (ballerinaPackages.contains(path)) {
                     selectedConnectorPath.add(path)
@@ -217,7 +214,6 @@ task generateNbuildLatestOpenAPIConnectors {
                 exec {
                     execConnectors++;
                     workingDir(path)
-                    println "Working directory : " + path
                     commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal openapi -i openapi.* --mode client --client-methods ${clientMethod}"     
                 }
                 println "Connector generation is successful for " + connector
@@ -288,13 +284,4 @@ def getBallerinaVersion(ballerinaDistributionPath) {
     def ballerinaVersion = output.split('\n').find { it.startsWith("Ballerina") }
     return ballerinaVersion
 }
-
-
-
-
-
-
-
-
-
 
